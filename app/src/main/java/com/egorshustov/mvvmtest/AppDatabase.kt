@@ -7,9 +7,11 @@ import androidx.room.Database
 import android.os.AsyncTask
 import androidx.sqlite.db.SupportSQLiteDatabase
 
+/**
+ * Singleton class for RoomDatabase access.
+ */
 
-// Singleton class for RoomDatabase access:
-@Database(entities = [Note::class], version = 1)
+@Database(entities = [Note::class], version = 1, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun noteDao(): NoteDao
 

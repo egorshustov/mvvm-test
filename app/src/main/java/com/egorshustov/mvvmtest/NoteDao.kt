@@ -3,7 +3,9 @@ package com.egorshustov.mvvmtest
 import androidx.lifecycle.LiveData
 import androidx.room.*
 
-// Generally this is good approach to create one Dao per entity:
+/**
+ * Generally this is good approach to create one Dao per entity.
+ */
 @Dao
 interface NoteDao {
 
