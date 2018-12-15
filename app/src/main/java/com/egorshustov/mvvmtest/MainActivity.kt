@@ -5,7 +5,8 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 class MainActivity : AppCompatActivity() {
 
@@ -15,12 +16,15 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val recyclerView = findViewById<RecyclerView>(R.id.recycler_notes)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.setHasFixedSize(true)
+
         // Android system will destroy following viewModel when 'this' activity is finished:
         appViewModel = ViewModelProviders.of(this).get(AppViewModel::class.java)
         // Lets get all notes:
-        appViewModel.getAllNotes().observe(this, Observer<List<Note>> {
-            // Update RecyclerView
-            Toast.makeText(this@MainActivity, "onChanged", Toast.LENGTH_SHORT).show()
-        })
+        appViewModel = ViewModelProviders.of(this).get(AppViewModel::class.java)
+        appViewModel.getAllNotes().observe(this,
+           Observer<List<Note>> { notes -> recyclerView.adapter = NoteAdapter(notes)})
     }
 }
