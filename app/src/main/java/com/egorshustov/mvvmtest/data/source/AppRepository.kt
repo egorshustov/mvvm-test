@@ -1,39 +1,42 @@
-package com.egorshustov.mvvmtest
+package com.egorshustov.mvvmtest.data.source
 
 import android.os.AsyncTask
 import androidx.lifecycle.LiveData
 import android.app.Application
+import com.egorshustov.mvvmtest.data.source.local.AppDatabase
+import com.egorshustov.mvvmtest.data.source.local.NotesDao
+import com.egorshustov.mvvmtest.data.Note
 
 
 class AppRepository(application: Application) {
-    private val noteDao: NoteDao
-    private val allNotes: LiveData<List<Note>>
+    private val notesDao: NotesDao
+    private val allNotes: LiveData<List<Note>?>
 
     init {
         val database = AppDatabase.getInstance(application)
-        noteDao = database!!.noteDao()
-        allNotes = noteDao.allNotes
+        notesDao = database!!.noteDao()
+        allNotes = notesDao.allNotes
     }
 
     // These methods are the API that AppRepository exposes
     // to the outside:
     fun insert(note: Note) {
-        InsertNoteAsyncTask(noteDao).execute(note)
+        InsertNoteAsyncTask(notesDao).execute(note)
     }
 
     fun update(note: Note) {
-        UpdateNoteAsyncTask(noteDao).execute(note)
+        UpdateNoteAsyncTask(notesDao).execute(note)
     }
 
     fun delete(note: Note) {
-        DeleteNoteAsyncTask(noteDao).execute(note)
+        DeleteNoteAsyncTask(notesDao).execute(note)
     }
 
     fun deleteAllNotes() {
-        DeleteAllNotesAsyncTask(noteDao).execute()
+        DeleteAllNotesAsyncTask(notesDao).execute()
     }
 
-    fun getAllNotes(): LiveData<List<Note>> {
+    fun getAllNotes(): LiveData<List<Note>?> {
         return allNotes
     }
 
@@ -43,41 +46,41 @@ class AppRepository(application: Application) {
     companion object {
 
         private class InsertNoteAsyncTask
-        internal constructor(private val noteDao: NoteDao) :
+        internal constructor(private val notesDao: NotesDao) :
             AsyncTask<Note, Void, Void>() {
 
             override fun doInBackground(vararg notes: Note): Void? {
-                noteDao.insert(notes[0])
+                notesDao.insert(notes[0])
                 return null
             }
         }
 
         private class UpdateNoteAsyncTask
-        internal constructor(private val noteDao: NoteDao) :
+        internal constructor(private val notesDao: NotesDao) :
             AsyncTask<Note, Void, Void>() {
 
             override fun doInBackground(vararg notes: Note): Void? {
-                noteDao.update(notes[0])
+                notesDao.update(notes[0])
                 return null
             }
         }
 
         private class DeleteNoteAsyncTask
-        internal constructor(private val noteDao: NoteDao) :
+        internal constructor(private val notesDao: NotesDao) :
             AsyncTask<Note, Void, Void>() {
 
             override fun doInBackground(vararg notes: Note): Void? {
-                noteDao.delete(notes[0])
+                notesDao.delete(notes[0])
                 return null
             }
         }
 
         private class DeleteAllNotesAsyncTask
-        internal constructor(private val noteDao: NoteDao) :
+        internal constructor(private val notesDao: NotesDao) :
             AsyncTask<Void, Void, Void>() {
 
             override fun doInBackground(vararg voids: Void): Void? {
-                noteDao.deleteAllNotes()
+                notesDao.deleteAllNotes()
                 return null
             }
         }

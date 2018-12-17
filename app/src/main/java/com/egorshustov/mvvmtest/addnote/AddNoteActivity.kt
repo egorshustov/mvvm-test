@@ -1,14 +1,15 @@
-package com.egorshustov.mvvmtest
+package com.egorshustov.mvvmtest.addnote
 
 import android.app.Activity
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
 import android.content.Intent
+import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
-import android.widget.NumberPicker
 import android.widget.EditText
+import android.widget.NumberPicker
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import com.egorshustov.mvvmtest.R
 
 
 class AddNoteActivity : AppCompatActivity() {
@@ -37,7 +38,7 @@ class AddNoteActivity : AppCompatActivity() {
         val description = editTextDescription!!.text.toString()
         val priority = numberPickerPriority!!.value
 
-        if (title.trim { it <= ' ' }.isEmpty() || description.trim { it <= ' ' }.isEmpty()) {
+        if (title.trim().isEmpty() || description.trim().isEmpty()) {
             Toast.makeText(this, "Please insert a title and description", Toast.LENGTH_SHORT).show()
             return
         }

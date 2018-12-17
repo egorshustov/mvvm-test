@@ -1,4 +1,4 @@
-package com.egorshustov.mvvmtest
+package com.egorshustov.mvvmtest.data.source.local
 
 import android.content.Context
 import androidx.room.Room
@@ -6,6 +6,7 @@ import androidx.room.RoomDatabase
 import androidx.room.Database
 import android.os.AsyncTask
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.egorshustov.mvvmtest.data.Note
 
 /**
  * Singleton class for RoomDatabase access.
@@ -13,7 +14,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 
 @Database(entities = [Note::class], version = 1, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun noteDao(): NoteDao
+    abstract fun noteDao(): NotesDao
 
     companion object {
         private var INSTANCE: AppDatabase? = null
@@ -45,18 +46,19 @@ abstract class AppDatabase : RoomDatabase() {
             override fun onCreate(db: SupportSQLiteDatabase) {
                 super.onCreate(db)
                 // After the database was created:
-                PopulateDbAsyncTask(INSTANCE).execute()
+                PopulateDbAsyncTask(INSTANCE)
+                    .execute()
             }
         }
 
         private class PopulateDbAsyncTask
         internal constructor(db: AppDatabase?) : AsyncTask<Void, Void, Void>() {
-            private val noteDao: NoteDao = db!!.noteDao()
+            private val notesDao: NotesDao = db!!.noteDao()
 
             override fun doInBackground(vararg voids: Void): Void? {
-                noteDao.insert(Note("Title 1", "Description 1", 1))
-                noteDao.insert(Note("Title 2", "Description 2", 2))
-                noteDao.insert(Note("Title 3", "Description 3", 3))
+                notesDao.insert(Note("Title 1", "Description 1", 1))
+                notesDao.insert(Note("Title 2", "Description 2", 2))
+                notesDao.insert(Note("Title 3", "Description 3", 3))
                 return null
             }
         }

@@ -1,4 +1,4 @@
-package com.egorshustov.mvvmtest
+package com.egorshustov.mvvmtest.notes
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -11,12 +11,15 @@ import android.view.View
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import android.widget.Toast
 import android.app.Activity
+import androidx.recyclerview.widget.ItemTouchHelper
+import com.egorshustov.mvvmtest.addnote.AddNoteActivity
+import com.egorshustov.mvvmtest.data.Note
+import com.egorshustov.mvvmtest.R
 
-
-class MainActivity : AppCompatActivity() {
+class NotesActivity : AppCompatActivity() {
 
     val ADD_NOTE_REQUEST = 1
-    private lateinit var appViewModel: AppViewModel
+    private lateinit var notesViewModel: NotesViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,7 +28,7 @@ class MainActivity : AppCompatActivity() {
         val buttonAddNote = findViewById<FloatingActionButton>(R.id.button_add_note)
         buttonAddNote.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
-                val intent = Intent(this@MainActivity, AddNoteActivity::class.java)
+                val intent = Intent(this@NotesActivity, AddNoteActivity::class.java)
                 startActivityForResult(intent, ADD_NOTE_REQUEST)
             }
         })
@@ -34,12 +37,34 @@ class MainActivity : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.setHasFixedSize(true)
 
+        val notesDefault: List<Note>? = null
+        val noteAdapter = NotesAdapter(notesDefault)
+        recyclerView.adapter = noteAdapter
+
         // Android system will destroy following viewModel when 'this' activity is finished:
-        appViewModel = ViewModelProviders.of(this).get(AppViewModel::class.java)
+        notesViewModel = ViewModelProviders.of(this).get(NotesViewModel::class.java)
         // Let's get all notes:
-        appViewModel = ViewModelProviders.of(this).get(AppViewModel::class.java)
-        appViewModel.getAllNotes().observe(this,
-           Observer<List<Note>> { notes -> recyclerView.adapter = NoteAdapter(notes)})
+        notesViewModel = ViewModelProviders.of(this).get(NotesViewModel::class.java)
+        notesViewModel.getAllNotes().observe(this,
+           Observer<List<Note>?> {
+                   notes -> noteAdapter.notes = notes
+               noteAdapter.notifyDataSetChanged()
+           })
+
+        ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
+            0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+
+            override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder,
+                                target: RecyclerView.ViewHolder): Boolean {
+                return false
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                notesViewModel.delete(noteAdapter.getNoteAt(viewHolder.adapterPosition))
+                Toast.makeText(this@NotesActivity, "Note deleted", Toast.LENGTH_SHORT).show()
+
+            }
+        }).attachToRecyclerView(recyclerView)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -51,7 +76,7 @@ class MainActivity : AppCompatActivity() {
             val priority = data.getIntExtra(AddNoteActivity.EXTRA_PRIORITY, 1)
 
             val note = Note(title, description, priority)
-            appViewModel.insert(note)
+            notesViewModel.insert(note)
 
             Toast.makeText(this, "Note saved", Toast.LENGTH_SHORT).show()
         } else {

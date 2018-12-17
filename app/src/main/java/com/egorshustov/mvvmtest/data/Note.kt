@@ -1,4 +1,4 @@
-package com.egorshustov.mvvmtest
+package com.egorshustov.mvvmtest.data
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
