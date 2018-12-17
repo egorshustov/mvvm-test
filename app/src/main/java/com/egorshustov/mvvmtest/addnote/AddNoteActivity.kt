@@ -1,7 +1,5 @@
 package com.egorshustov.mvvmtest.addnote
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -9,46 +7,48 @@ import android.widget.EditText
 import android.widget.NumberPicker
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProviders
 import com.egorshustov.mvvmtest.R
+import com.egorshustov.mvvmtest.data.Note
 
 
 class AddNoteActivity : AppCompatActivity() {
 
-    private var editTextTitle: EditText? = null
-    private var editTextDescription: EditText? = null
-    private var numberPickerPriority: NumberPicker? = null
+    private lateinit var editTextTitle: EditText
+    private lateinit var editTextDescription: EditText
+    private lateinit var numberPickerPriority: NumberPicker
+    private lateinit var addNoteViewModel: AddNoteViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_note)
 
+        addNoteViewModel = ViewModelProviders.of(this).get(AddNoteViewModel::class.java)
+
         editTextTitle = findViewById(R.id.edit_text_title)
         editTextDescription = findViewById(R.id.edit_text_description)
         numberPickerPriority = findViewById(R.id.number_picker_priority)
 
-        numberPickerPriority!!.minValue = 1
-        numberPickerPriority!!.maxValue = 10
+        numberPickerPriority.minValue = 1
+        numberPickerPriority.maxValue = 10
 
-        supportActionBar!!.setHomeAsUpIndicator(R.drawable.ic_close)
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_close)
         title = "Add Note"
     }
 
     private fun saveNote() {
-        val title = editTextTitle!!.text.toString()
-        val description = editTextDescription!!.text.toString()
-        val priority = numberPickerPriority!!.value
+        val title = editTextTitle.text.toString()
+        val description = editTextDescription.text.toString()
+        val priority = numberPickerPriority.value
 
         if (title.trim().isEmpty() || description.trim().isEmpty()) {
             Toast.makeText(this, "Please insert a title and description", Toast.LENGTH_SHORT).show()
             return
         }
 
-        val data = Intent()
-        data.putExtra(EXTRA_TITLE, title)
-        data.putExtra(EXTRA_DESCRIPTION, description)
-        data.putExtra(EXTRA_PRIORITY, priority)
-
-        setResult(Activity.RESULT_OK, data)
+        val note = Note(title, description, priority)
+        addNoteViewModel.insert(note)
+        Toast.makeText(this, "Note saved", Toast.LENGTH_SHORT).show()
         finish()
     }
 
@@ -66,12 +66,6 @@ class AddNoteActivity : AppCompatActivity() {
             }
             else -> super.onOptionsItemSelected(item)
         }
-    }
-
-    companion object {
-        val EXTRA_TITLE = "com.egorshustov.mvvmtest.EXTRA_TITLE"
-        val EXTRA_DESCRIPTION = "com.egorshustov.mvvmtest.EXTRA_DESCRIPTION"
-        val EXTRA_PRIORITY = "com.egorshustov.mvvmtest.EXTRA_PRIORITY"
     }
 }
 

@@ -10,11 +10,11 @@ import com.egorshustov.mvvmtest.data.Note
 
 class AppRepository(application: Application) {
     private val notesDao: NotesDao
-    private val allNotes: LiveData<List<Note>?>
+    private val allNotes: LiveData<List<Note>>
 
     init {
         val database = AppDatabase.getInstance(application)
-        notesDao = database!!.noteDao()
+        notesDao = database.noteDao()
         allNotes = notesDao.allNotes
     }
 
@@ -36,7 +36,7 @@ class AppRepository(application: Application) {
         DeleteAllNotesAsyncTask(notesDao).execute()
     }
 
-    fun getAllNotes(): LiveData<List<Note>?> {
+    fun getAllNotes(): LiveData<List<Note>> {
         return allNotes
     }
 

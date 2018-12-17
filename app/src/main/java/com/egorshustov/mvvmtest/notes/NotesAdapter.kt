@@ -8,7 +8,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.egorshustov.mvvmtest.R
 import com.egorshustov.mvvmtest.data.Note
 
-class NotesAdapter(var notes: List<Note>?): RecyclerView.Adapter<NotesAdapter.NoteHolder>() {
+class NotesAdapter : RecyclerView.Adapter<NotesAdapter.NoteHolder>() {
+
+    private val notes: ArrayList<Note> = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteHolder {
         val itemView = LayoutInflater.from(parent.context)
@@ -17,21 +19,21 @@ class NotesAdapter(var notes: List<Note>?): RecyclerView.Adapter<NotesAdapter.No
     }
 
     override fun onBindViewHolder(holder: NoteHolder, position: Int) {
-        val currentNote = notes?.get(position)
-        holder.textViewTitle.text = currentNote?.title
-        holder.textViewDescription.text = currentNote?.description
-        holder.textViewPriority.text = currentNote?.priority.toString()
+        val currentNote = notes.get(position)
+        holder.textViewTitle.text = currentNote.title
+        holder.textViewDescription.text = currentNote.description
+        holder.textViewPriority.text = currentNote.priority.toString()
     }
 
-    override fun getItemCount(): Int {
-        if (notes?.size == null)
-            return 0
-        else
-            return notes!!.size
-    }
+    override fun getItemCount(): Int = notes.size
 
     fun getNoteAt(position: Int): Note {
-        return notes!![position]
+        return notes[position]
+    }
+
+    fun replaceNotes(refreshNotes: List<Note>) {
+        notes.clear()
+        notes.addAll(refreshNotes)
     }
 
     class NoteHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

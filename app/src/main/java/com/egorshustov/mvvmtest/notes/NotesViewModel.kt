@@ -1,28 +1,19 @@
 package com.egorshustov.mvvmtest.notes
 
-import androidx.lifecycle.LiveData
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import com.egorshustov.mvvmtest.data.source.AppRepository
+import androidx.lifecycle.LiveData
 import com.egorshustov.mvvmtest.data.Note
+import com.egorshustov.mvvmtest.data.source.AppRepository
 
 
-class NotesViewModel(application: Application) : AndroidViewModel(application) {
+class NotesViewModel(context: Application) : AndroidViewModel(context) {
     // The idea is to have one viewmodel per view,
     // i.e one viewmodel for each activity/fragment in the activity.
-    private val repository: AppRepository
-    private val allNotes: LiveData<List<Note>?>
-
-    init {
-        // We need the application context to instantiate the repository
-        // and we will only get it from AndroidViewModel
-        repository = AppRepository(application)
-        allNotes = repository.getAllNotes()
-    }
-
-    fun insert(note: Note) {
-        repository.insert(note)
-    }
+    // We need the application context to instantiate the repository
+    // and we will only get it from AndroidViewModel:
+    private val repository: AppRepository = AppRepository(context)
+    private val allNotes: LiveData<List<Note>> = repository.getAllNotes()
 
     fun update(note: Note) {
         repository.update(note)
@@ -36,7 +27,7 @@ class NotesViewModel(application: Application) : AndroidViewModel(application) {
         repository.deleteAllNotes()
     }
 
-    fun getAllNotes(): LiveData<List<Note>?> {
+    fun getAllNotes(): LiveData<List<Note>> {
         return allNotes
     }
 }
