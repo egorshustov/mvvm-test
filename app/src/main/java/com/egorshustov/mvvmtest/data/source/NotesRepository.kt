@@ -8,7 +8,7 @@ import com.egorshustov.mvvmtest.data.source.local.NotesDao
 import com.egorshustov.mvvmtest.data.Note
 
 
-class AppRepository(application: Application) {
+class NotesRepository(application: Application) {
     private val notesDao: NotesDao
     private val allNotes: LiveData<List<Note>>
 
@@ -18,7 +18,7 @@ class AppRepository(application: Application) {
         allNotes = notesDao.allNotes
     }
 
-    // These methods are the API that AppRepository exposes
+    // These methods are the API that NotesRepository exposes
     // to the outside:
     fun insert(note: Note) {
         InsertNoteAsyncTask(notesDao).execute(note)
