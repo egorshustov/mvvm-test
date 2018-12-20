@@ -11,7 +11,7 @@
             android:id="@+id/recycler_notes"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:listitem="@layout/cardview_item_note"/>
+            tools:listitem="@layout/item_note"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/button_add_note"

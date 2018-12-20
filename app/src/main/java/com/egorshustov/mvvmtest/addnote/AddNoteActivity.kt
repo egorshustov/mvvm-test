@@ -54,13 +54,13 @@ class AddNoteActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val menuInflater = menuInflater
-        menuInflater.inflate(R.menu.add_note_menu, menu)
+        menuInflater.inflate(R.menu.activity_add_note, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         return when (item?.itemId) {
-            R.id.save_note -> {
+            R.id.menu_save_note -> {
                 saveNote()
                 true
             }

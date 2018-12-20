@@ -2,6 +2,8 @@ package com.egorshustov.mvvmtest.notes
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -15,13 +17,14 @@ import com.egorshustov.mvvmtest.addnote.AddNoteActivity
 import com.egorshustov.mvvmtest.data.Note
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
+
 class NotesActivity : AppCompatActivity() {
 
     private lateinit var notesViewModel: NotesViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_notes)
 
         val buttonAddNote = findViewById<FloatingActionButton>(R.id.button_add_note)
         buttonAddNote.setOnClickListener(object : View.OnClickListener {
@@ -58,8 +61,24 @@ class NotesActivity : AppCompatActivity() {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 notesViewModel.delete(noteAdapter.getNoteAt(viewHolder.adapterPosition))
                 Toast.makeText(this@NotesActivity, "Note deleted", Toast.LENGTH_SHORT).show()
-
             }
         }).attachToRecyclerView(recyclerView)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val menuInflater = menuInflater
+        menuInflater.inflate(R.menu.activity_notes, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        return when (item?.itemId) {
+            R.id.menu_delete_notes -> {
+                notesViewModel.deleteAllNotes()
+                Toast.makeText(this, "All notes deleted", Toast.LENGTH_SHORT).show()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 }
