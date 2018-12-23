@@ -1,51 +1,46 @@
 package com.egorshustov.mvvmtest.data.source
 
-import androidx.lifecycle.LiveData
 import android.app.Application
+import com.egorshustov.mvvmtest.data.Note
 import com.egorshustov.mvvmtest.data.source.local.AppDatabase
 import com.egorshustov.mvvmtest.data.source.local.NotesDao
-import com.egorshustov.mvvmtest.data.Note
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.withContext
 
 
-class NotesRepository(application: Application) {
-    private val notesDao: NotesDao
-    private val allNotes: LiveData<List<Note>>
-
+class NotesRepository (application: Application)
+{
+    private val noteDao: NotesDao
     init {
         val database = AppDatabase.getInstance(application)
-        notesDao = database.noteDao()
-        allNotes = notesDao.allNotes
+        noteDao = database.noteDao()
     }
-
     // These methods are the API that NotesRepository exposes
     // to the outside:
-    fun insert(note: Note) {
-        GlobalScope.launch {
-            notesDao.insert(note)
+    suspend fun insert(note: Note) {
+        withContext(IO) {
+            noteDao.insert(note)
         }
     }
 
-    fun update(note: Note) {
-        GlobalScope.launch {
-            notesDao.update(note)
+    suspend fun update(note: Note) {
+        withContext(IO) {
+            noteDao.update(note)
         }
     }
 
-    fun delete(note: Note) {
-        GlobalScope.launch {
-            notesDao.delete(note)
+    suspend fun delete(note: Note) {
+        withContext(IO) {
+            noteDao.delete(note)
         }
     }
 
-    fun deleteAllNotes() {
-        GlobalScope.launch {
-            notesDao.deleteAllNotes()
+    suspend fun deleteAllNotes() {
+        withContext(IO) {
+            noteDao.deleteAllNotes()
         }
     }
 
-    fun getAllNotes(): LiveData<List<Note>> {
-        return allNotes
-    }
+    fun getNotes() = noteDao.getNotes()
+
 }

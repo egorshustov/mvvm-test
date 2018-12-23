@@ -10,8 +10,8 @@ import com.egorshustov.mvvmtest.data.Note
 @Dao
 interface NotesDao {
 
-    @get:Query("SELECT * FROM note_table ORDER BY priority DESC")
-    val allNotes: LiveData<List<Note>>
+    @Query("SELECT * FROM note_table ORDER BY priority DESC")
+    fun getNotes(): LiveData<List<Note>>
     // Now we can observe List<Note> object with LiveData.
     // As soon as any changes will appear in note_table,
     // List<Note> will automatically be updated by Room

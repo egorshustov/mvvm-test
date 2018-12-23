@@ -17,7 +17,7 @@ class AddNoteActivity : AppCompatActivity() {
     private lateinit var editTextTitle: EditText
     private lateinit var editTextDescription: EditText
     private lateinit var numberPickerPriority: NumberPicker
-    private lateinit var addNoteViewModel: AddNoteViewModel
+    lateinit var addNoteViewModel: AddNoteViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,8 +47,8 @@ class AddNoteActivity : AppCompatActivity() {
         }
 
         val note = Note(title, description, priority)
-        addNoteViewModel.insert(note)
         Toast.makeText(this, "Note saved", Toast.LENGTH_SHORT).show()
+        addNoteViewModel.insert(note)
         finish()
     }
 

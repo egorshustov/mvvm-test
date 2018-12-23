@@ -44,8 +44,9 @@ class NotesActivity : AppCompatActivity() {
         // Android system will destroy following viewModel when 'this' activity is finished:
         // Let's get all notes:
         notesViewModel = ViewModelProviders.of(this).get(NotesViewModel::class.java)
-        notesViewModel.getAllNotes().observe(this,
-           Observer<List<Note>> {
+        notesViewModel.notes.observe(
+            this,
+            Observer<List<Note>> {
                    notes -> noteAdapter.replaceNotes(notes)
                noteAdapter.notifyDataSetChanged()
            })
