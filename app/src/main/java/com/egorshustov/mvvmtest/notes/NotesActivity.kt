@@ -13,9 +13,11 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.egorshustov.mvvmtest.R
-import com.egorshustov.mvvmtest.addnote.AddNoteActivity
+import com.egorshustov.mvvmtest.addeditnote.AddEditNoteActivity
 import com.egorshustov.mvvmtest.data.Note
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+
+
 
 
 class NotesActivity : AppCompatActivity() {
@@ -29,7 +31,7 @@ class NotesActivity : AppCompatActivity() {
         val buttonAddNote = findViewById<FloatingActionButton>(R.id.button_add_note)
         buttonAddNote.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
-                val intent = Intent(this@NotesActivity, AddNoteActivity::class.java)
+                val intent = Intent(this@NotesActivity, AddEditNoteActivity::class.java)
                 startActivity(intent)
             }
         })
@@ -64,6 +66,17 @@ class NotesActivity : AppCompatActivity() {
                 Toast.makeText(this@NotesActivity, "Note deleted", Toast.LENGTH_SHORT).show()
             }
         }).attachToRecyclerView(recyclerView)
+
+        noteAdapter.setOnItemClickListener(object : NotesAdapter.OnItemClickListener {
+            override fun onItemClick(note: Note) {
+                val intent = Intent(this@NotesActivity, AddEditNoteActivity::class.java)
+                intent.putExtra(AddEditNoteActivity.EXTRA_ID, note.id)
+                intent.putExtra(AddEditNoteActivity.EXTRA_TITLE, note.title)
+                intent.putExtra(AddEditNoteActivity.EXTRA_DESCRIPTION, note.description)
+                intent.putExtra(AddEditNoteActivity.EXTRA_PRIORITY, note.priority)
+                startActivity(intent)
+            }
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

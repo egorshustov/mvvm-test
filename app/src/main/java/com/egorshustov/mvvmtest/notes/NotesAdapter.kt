@@ -11,6 +11,7 @@ import com.egorshustov.mvvmtest.data.Note
 class NotesAdapter : RecyclerView.Adapter<NotesAdapter.NoteHolder>() {
 
     private val notes: ArrayList<Note> = ArrayList()
+    var listener: OnItemClickListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteHolder {
         val itemView = LayoutInflater.from(parent.context)
@@ -36,9 +37,32 @@ class NotesAdapter : RecyclerView.Adapter<NotesAdapter.NoteHolder>() {
         notes.addAll(refreshNotes)
     }
 
-    class NoteHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val textViewTitle: TextView = itemView.findViewById(R.id.text_view_title)
-        val textViewDescription: TextView = itemView.findViewById(R.id.text_view_description)
-        val textViewPriority: TextView = itemView.findViewById(R.id.text_view_priority)
+    inner class NoteHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val textViewTitle: TextView
+        val textViewDescription: TextView
+        val textViewPriority: TextView
+
+        init {
+            textViewTitle = itemView.findViewById(R.id.text_view_title)
+            textViewDescription = itemView.findViewById(R.id.text_view_description)
+            textViewPriority = itemView.findViewById(R.id.text_view_priority)
+
+            itemView.setOnClickListener {
+                val position = adapterPosition
+                if (listener != null && position != RecyclerView.NO_POSITION) {
+                    listener?.onItemClick(notes[position] /*Let's pass notes[position] argument to onItemClick method*/)
+                }
+            }
+        }
+    }
+
+    interface OnItemClickListener {
+        fun onItemClick(note: Note)
+    }
+
+    fun setOnItemClickListener(listener: OnItemClickListener /*we get passed this argument (listener)*/) {
+        this.listener = listener
+        // We can later use listener class member variable to call our OnItemClick method on it,
+        // and this way forward our note object to whatever implements this interface.
     }
 }

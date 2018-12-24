@@ -1,4 +1,4 @@
-package com.egorshustov.mvvmtest.addnote
+package com.egorshustov.mvvmtest.addeditnote
 
 import android.os.Bundle
 import android.view.Menu
@@ -10,20 +10,28 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
 import com.egorshustov.mvvmtest.R
 import com.egorshustov.mvvmtest.data.Note
+import android.nfc.NfcAdapter.EXTRA_ID
+import android.content.Intent
+import android.nfc.NfcAdapter.EXTRA_ID
+import android.R.attr.data
 
 
-class AddNoteActivity : AppCompatActivity() {
+
+
+
+
+class AddEditNoteActivity : AppCompatActivity() {
 
     private lateinit var editTextTitle: EditText
     private lateinit var editTextDescription: EditText
     private lateinit var numberPickerPriority: NumberPicker
-    lateinit var addNoteViewModel: AddNoteViewModel
+    lateinit var addEditNoteViewModel: AddEditNoteViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_note)
 
-        addNoteViewModel = ViewModelProviders.of(this).get(AddNoteViewModel::class.java)
+        addEditNoteViewModel = ViewModelProviders.of(this).get(AddEditNoteViewModel::class.java)
 
         editTextTitle = findViewById(R.id.edit_text_title)
         editTextDescription = findViewById(R.id.edit_text_description)
@@ -33,7 +41,17 @@ class AddNoteActivity : AppCompatActivity() {
         numberPickerPriority.maxValue = 10
 
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_close)
-        title = "Add Note"
+
+        val intent = intent
+
+        if (intent.hasExtra(EXTRA_ID)) {
+            title = "Edit Note"
+            editTextTitle.setText(intent.getStringExtra(EXTRA_TITLE))
+            editTextDescription.setText(intent.getStringExtra(EXTRA_DESCRIPTION))
+            numberPickerPriority.value = intent.getIntExtra(EXTRA_PRIORITY, 1)
+        } else {
+            title = "Add Note"
+        }
     }
 
     private fun saveNote() {
@@ -47,8 +65,15 @@ class AddNoteActivity : AppCompatActivity() {
         }
 
         val note = Note(title, description, priority)
-        Toast.makeText(this, "Note saved", Toast.LENGTH_SHORT).show()
-        addNoteViewModel.insert(note)
+        val id = intent.getIntExtra(EXTRA_ID, -1)
+        if (id != -1) {
+            note.id = id
+            Toast.makeText(this, "Note updated", Toast.LENGTH_SHORT).show()
+            addEditNoteViewModel.update(note)
+        } else {
+            Toast.makeText(this, "Note saved", Toast.LENGTH_SHORT).show()
+            addEditNoteViewModel.insert(note)
+        }
         finish()
     }
 
@@ -66,6 +91,13 @@ class AddNoteActivity : AppCompatActivity() {
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    companion object {
+        const val EXTRA_ID = "com.egorshustov.mvvmtest.EXTRA_ID"
+        const val EXTRA_TITLE = "com.egorshustov.mvvmtest.EXTRA_TITLE"
+        const val EXTRA_DESCRIPTION = "com.egorshustov.mvvmtest.EXTRA_DESCRIPTION"
+        const val EXTRA_PRIORITY = "com.egorshustov.mvvmtest.EXTRA_PRIORITY"
     }
 }
 

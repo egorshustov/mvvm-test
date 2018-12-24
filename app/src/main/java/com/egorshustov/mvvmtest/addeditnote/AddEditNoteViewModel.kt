@@ -1,4 +1,4 @@
-package com.egorshustov.mvvmtest.addnote
+package com.egorshustov.mvvmtest.addeditnote
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
@@ -7,7 +7,7 @@ import com.egorshustov.mvvmtest.data.source.NotesRepository
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.Main
 
-class AddNoteViewModel(context: Application) : AndroidViewModel(context) {
+class AddEditNoteViewModel(context: Application) : AndroidViewModel(context) {
     // The idea is to have one ViewModel per view,
     // i.e one ViewModel for each activity/fragment in the activity.
     // We need the application context to instantiate the repository
@@ -22,7 +22,7 @@ class AddNoteViewModel(context: Application) : AndroidViewModel(context) {
     private val viewModelJob = Job()
 
     /**
-     * This is the scope for all coroutines launched by [AddNoteViewModel].
+     * This is the scope for all coroutines launched by [AddEditNoteViewModel].
      *
      * Since we pass [viewModelJob], you can cancel all coroutines launched by [viewModelScope] by calling
      * viewModelJob.cancel().  This is called in [onCleared].
@@ -40,6 +40,12 @@ class AddNoteViewModel(context: Application) : AndroidViewModel(context) {
     fun insert(note: Note) {
         viewModelScope.launch {
             repository.insert(note)
+        }
+    }
+
+    fun update(note: Note) {
+        viewModelScope.launch {
+            repository.update(note)
         }
     }
 }
