@@ -49,8 +49,9 @@ class NotesActivity : AppCompatActivity() {
         notesViewModel.notes.observe(
             this,
             Observer<List<Note>> {
-                   notes -> noteAdapter.replaceNotes(notes)
-               noteAdapter.notifyDataSetChanged()
+                   notes -> noteAdapter.submitList(notes)
+                /*notes -> noteAdapter.replaceNotes(notes)
+               noteAdapter.notifyDataSetChanged()*/
            })
 
         ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
